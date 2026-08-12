@@ -194,13 +194,6 @@ body{
   letter-spacing:calc(.1 * var(--u));
   color:var(--gold-text);
 }
-.price span{
-  display:inline;
-  text-decoration:underline;
-  text-decoration-thickness:calc(2 * var(--u));
-  text-underline-offset:calc(3.5 * var(--u));
-  text-decoration-skip-ink:none;
-}
 
 /* -------------------------------------------------------------------- cta */
 .cta{
@@ -290,8 +283,8 @@ body{
     <div class="badge">
       <img class="badge__clock" src="data:image/webp;base64,UklGRloGAABXRUJQVlA4WAoAAAAQAAAAPwAAPwAAQUxQSG8AAAABcBvAbdzc/kujkwmAfpIqIiYAo46J12iSxlNkTZDdpUiLQg2KnVL0iMIHFL+OCi+o8kili6h2DRUvoeoVVP4C9PdPGy+ALlagiSXoYQ1aWIQOzhu4msc6pDGZxXAO8yk4MzD7CPQQOkfwDPFnGAEAVlA4IMQFAABwGgCdASpAAEAAPikSh0KhoQmFVuwMAUJZwCdOUFTPkV+e81TomT9t/Df7eFjq/0X8Xufa9a90QzKfUT7p+UumJ/wz+mflDnAXqz9L/zX5Saj9+THM+0AP41/a/8h9wHxrf2X99/KT2p/kX9g/03+F/G77Bv5B/Sv8r+aP+U////0+472QftV7Gf7AGIH/pSiP5HsV0+KcBdnr/0V0a1AQOq183Zj8ZST5EXi6OHtsZHBWtYPe4lQHhE4eobm5hDTZqt0elTGA8i39Ax6axR/XKtLp3DoFXyAGOBWMAP7//j9mLgGZ9IYgtz53s0OleoHtbORfb5NYOIGjwPAXeqR06m+8xJuS1Ol6NrwwdVncfDFeXl1o1BhaPicxssxhHEsm0+gIYCqcElqcR9kSFuJowfFC3hSMWfOuNYuf3FLx/TMvY8epu39QpIBkcNV1H7FdexLAyiJoA+DYdWi2uE7vcR1Eg4X48zrPreJU/Z/2qmpuAD1Zi6dMzZGQwkDxelXQyHkwdAsZ1i/TYLUezuiNMV6FSmXleP8dU9pLIPvmQw6tjhPjRQwjpfsCvJ5axZqY2Q0ptF6O21cBBuzviFazzMGVPFdvqPel6nmC17ozr5dTLA/3/wZQ0pf1yWAycSrxaDn5Wxt8uO//xSO1mYa5PhmrGCJXDPZ9GNwOdzjBAv7S45fYs767XDsXQAWjhbX6tNMjTdt9SL8l6glHPLcLVbbYyKN/RKu/5zPfzwsPH7dXRhMJdjjewMkrlxy1/hzuAEDy7Wnxbu54G7GcCmgPPMudqHCvnfu7vI04/PInFLxWZ8VR/7ua0yinbElB2StRCDeI7+O0t3sQh9X8zEpidzWja33nNMFoDFGxrrJ0LnbXUt9d6ByFAtnoUtJJcDkRlrvW3D8FQKRo5G7ZM4Dj43o0BFBJsxRfLMR32YHGJ5LTHR6mlH/3bt16kK5aAp8taZwN8WN5C3tnAe5eFlvIgiBFy+kYk6rvrRNIQ5/YZablmfMp/8OpwGHyd4L+t3Knty0n+KI9lBQhc6il+WaEJJ2952QhLjMokgmVxPoaTj0ZskQH/1atTmvQ9OnqfPNhZFhcT6Gz0ZVir/qdiLcg02cWi5ORtlhZkdWEurfURhToIF6H793Pje/wm+Ak+SWlkK7lexlxqzdwJ8c+r44XupFsdMg3v3+2fiXVClRcH5RL5fiNDTgMAdqWag8W4GzlQ64PoTKxHKKYKB8r+vcrnTDcIfTgCs8Zk8LIcOZiVdkGtGfh389V2Pd9KDkvEtUIFBwFyiQb/7QUuksQ5FlYJqE6V+3yG1lebyaTrO9H30Kh7TVHCsdj4acGeoan+Lp55t6eX+kBfr7m2u0g475GJ+oRBORBQEiUMG5Wkkw8oRM39rMUfU1eI9A04SyfvFy85C/D2KA4jLAJkdAZET9X9ALL39dIj5Y3jHUcEuVAdjCAMwdBMZIC0IxRdltQsra0C2gMf/KvBWnm12KS49blbOC2oIZyrnyERrotP5O2Chdyrqr0OWf/4ZQKlBYEhTxWyg/5CAS7thUCK8c071EetPq5N91JQIEOjoWxBgFn+E0vGR8DOKFmKULHiJZGzA3bmv7ifK15UiVa8fYyu6hYC9W84iGscz6CFyBI5jf3+7p4XCQd4Uxe1Lwn3RtEvge39/a3xNyVg9R6XJhrh4MiUN2ErmTtCCLNnXtMg9go57XtZ6+//8A0cbbkGjJrp3Ov3OTX7MotKuie2gu+hQ5M+4SOxV81NbT6Kd69WUPxFYi8K2zozHpzEBD9Y9bg7gvbnUwt2KsdD9//DeoHvXPsHfGizDds/jCcfEYi1pIT1OyHwOResBB1o0O1u1Uh10JmvqGt1VVPZx99iHqeCjH+8QphETDzUQQ+o/wXFwXSRh32kRC8hx+DziAp5JXT87Q7gH35Md+/NKm0/+IVAuWaWijY5yZswfOGzVUlpuSPOoyYAAA=" width="64" height="64" alt="" decoding="async">
       <span>
-        <i class="d">29-IYUN</i>
-        <i class="t">VAQTI: 20:30</i>
+        <i class="d">25-AVGUST</i>
+        <i class="t">20:30da</i>
       </span>
     </div>
   </header>
@@ -319,12 +312,12 @@ body{
         <li>60 oyga bo‘lib to‘lash</li>
         <li>Faqat pasport evaziga</li>
       </ul>
-      <p class="price"><span>Oyiga 3 mln 400</span><br><span>ming so‘mdan</span></p>
+      <p class="price">Oyiga 3 mln 400<br>ming so‘mdan</p>
     </div>
   </section>
 
   <!-- CTA destination: single place to change. Point at a Telegram bot, tel:, or a form. -->
-  <a class="cta" href="#" id="cta">
+  <a class="cta" href="https://t.me/+0rSkxYYgNc9hOWMy" id="cta">
     TAQDIMOTDA QATNASHISH
     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <path d="M9 11.4V5.6a1.85 1.85 0 1 1 3.7 0v5.1" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>

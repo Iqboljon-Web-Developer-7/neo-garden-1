@@ -15,10 +15,10 @@ python3 -m http.server 8000     # or serve it
 | HTTP requests | **5** | — |
 | index.html (gzipped) | 6.8 KB | 14 KB |
 | Font subset (woff2) | 8.2 KB | 8.5 KB |
-| building-card.avif | 7.5 KB | 45 KB |
+| building-card.avif | 15.4 KB | 45 KB |
 | person.avif | 14.0 KB | 40 KB |
 | logo.avif | 4.5 KB | 6 KB |
-| **Total over the wire** | **41.1 KB** | 110 KB |
+| **Total over the wire** | **49.1 KB** | 110 KB |
 | Render-blocking requests | **0** | 0 |
 | CLS | **0** | 0 |
 | LCP | ~70–100 ms (local) | — |
@@ -72,15 +72,15 @@ runner-up (Saira Condensed) managed 73 %. Rerun with `node tools/match-glyphs.mj
 
 | region | diff | meaningful? |
 |---|---|---|
-| header | 5.9 % | yes |
+| header | 8.9 % | **no** — badge shows your date, mockup shows 29-IYUN |
 | h1 | 7.0 % | yes |
 | cta | 9.3 % | yes |
 | timer | 12.9 % | **no** — shows MM:SS, mockup shows HH:MM:SS |
-| card | 32.1 % | **no** — different building *and* different person |
-| **overall** | **17.8 %** | |
+| card | 39.8 % | **no** — different building, different person, no price underline |
+| **overall** | **21.7 %** | |
 
-Only the header, h1 and CTA numbers still measure fidelity, and they're at the floor:
-what's left there is text antialiasing, which never reaches zero on a thresholded diff.
+Only the h1 and CTA numbers still measure fidelity, and they're at the floor: what's
+left there is text antialiasing, which never reaches zero on a thresholded diff.
 
 The card and timer no longer match the mockup **by request** — the card carries your
 real `building.jpeg` and the supplied person photo, and the countdown dropped its hours
@@ -93,19 +93,20 @@ column. Their diff percentages measure those decisions, not build quality.
    white dress shirt, hands clasped*. You chose to keep the supplied asset, so the card
    cannot pixel-match there. Dropping the correct suit-jacket cutout into
    `person.avif` and re-running `tools/make-assets.py` would close it.
-2. **The card shows `building.jpeg`, graded to night.** You asked for your real render
-   instead of the mockup's. It's a daylight photo of a *different* building, so the card
-   cannot match `screen.png` there. Two things were needed to make it work in a dark
-   composition — see *Note on the card image* below.
-   To go back to the mockup's building, restore `build_plate()` to crop from
-   `screen.png` (it's in git-less history, but the crop was `CARD` x `PLATE_H`).
+2. **The card shows `building.jpeg`, used as shot.** You asked for your real render
+   instead of the mockup's, with no recolouring. It's a daylight photo of a *different*
+   building, so the card cannot match `screen.png` there — that's the whole 42 %.
 3. **The page ends at the countdown.** `screen.png` is cut off mid-box at y=1376; you
    chose to close the dashed box cleanly and stop there. Conveniently the design is
    exactly 688 CSS px tall, so the box closes right at the fold.
 4. **The countdown shows minutes and seconds only.** You asked to drop the hours
    column, so the mockup's `SOAT` group is gone. Minutes accumulate rather than rolling
    into a hidden hours field, so a 90-minute deadline reads `90:00`, not `30:00`.
-5. **Logo and clock are images, not SVG.** They're bespoke artwork that exists only
+5. **Badge, price and CTA carry your content, not the mockup's.** The badge reads
+   `25-AVGUST / 20:30da` (the mockup's `29-IYUN / VAQTI: 20:30`), the price lost its
+   underline, and the CTA points at your Telegram invite. `VAQTI:` was dropped because
+   `VAQTI: 20:30da` doubles the time marker — say the word to put the label back.
+6. **Logo and clock are images, not SVG.** They're bespoke artwork that exists only
    inside `screen.png`; a hand-drawn SVG never converged (the header diff was 10.5 %
    with my traced version, 5.9 % with the real artwork). A logo is an asset, not text,
    so this is also the more conventional representation. It carries `alt="Neo Garden"`,
@@ -115,8 +116,9 @@ column. Their diff percentages measure those decisions, not build quality.
 
 | what | where |
 |---|---|
-| **CTA destination** | `index.html`, `<a class="cta" href="#">` — point it at a Telegram bot, `tel:`, or a form. It's a placeholder; the mockup gave no target. |
+| **Event date / time** | `index.html`, `<i class="d">25-AVGUST</i>` and `<i class="t">20:30da</i>`. Hardcoded text. **If you change it, re-run `python3 tools/subset-font.py`** — the font carries only the glyphs the page uses, so a new letter renders as tofu until you do. |
 | **Countdown length** | `index.html`, `DURATION_SECONDS = 120` (one line). Currently a plain 2-minute timer that starts on load. |
+| CTA destination | `index.html`, `<a class="cta" href="https://t.me/+0rSkxYYgNc9hOWMy">`. Opens in the same tab; add `target="_blank" rel="noopener"` if you'd rather keep the page open behind it. |
 | Make the timer survive reloads | store `endsAt` in `localStorage` instead of recomputing it — two lines, in the same IIFE. |
 
 The countdown renders from an absolute deadline rather than decrementing a counter, so
@@ -134,7 +136,7 @@ All regenerable; none of it ships.
 
 | command | what it does |
 |---|---|
-| `python3 tools/make-assets.py` | Builds the card image from `building.jpeg` (night grade + composite) and the person cutout, and encodes AVIF+WebP. |
+| `python3 tools/make-assets.py` | Crops `building.jpeg` to the card's aspect and exports the person cutout; encodes AVIF+WebP for both. |
 | `python3 tools/make-icons.py` | Extracts the logo lockup + clock glyph from `screen.png`, keys them to transparency, writes `assets/img/logo.*` and inlines the clock. **Re-run after editing the header markup.** |
 | `python3 tools/subset-font.py` | Downloads Oswald and subsets it to the glyphs `index.html` actually uses. |
 | `node tools/verify.mjs` | Pixel diff + byte budgets + LCP/CLS. The gate. Writes `.work/render.png` and `.work/diff.png`. |
@@ -147,28 +149,30 @@ Requires Python with Pillow + fontTools, and Node with the three dev deps in
 
 ### Note on the card image
 
-`building.jpeg` is a 3:4 portrait of a tall tower; the card is a 2.17:1 strip. Two
-problems had to be solved, both in `tools/make-assets.py`:
+`building.jpeg` is used as shot — `build_plate()` crops it to the card's 2.17:1 aspect,
+resizes, and stops. No colour grade, no recomposition.
 
-**Framing.** Cropping a band out of the portrait shows four floors and reads as a
-low-rise — it loses the building. Instead the whole tower is scaled to the plate height
-and composited onto a backdrop made from a heavily blurred, stretched copy of the
-source. Deriving the backdrop from the source rather than inventing a gradient means
-the sky and ground colours match exactly, so the seam doesn't show. `TOWER_X` biases it
-left of centre because the person covers the plate from x≈444.
+Two earlier passes were tried and thrown away, in case they come up again:
 
-**Grade.** `night_grade()` drops a per-channel gain and gamma over the image to darken
-and cool it, then adds a warm pass back into bright pixels. The sky has to be excluded
-from that warm pass explicitly (it's masked by blue-minus-red): it's the brightest
-thing in the frame, so a plain luminance threshold turns it into a sunset instead of a
-night sky. `floor_fade()` then darkens the lower plate so the white bullets and gold
-price keep their contrast.
+- **Grading it to night** to match the mockup's lit-at-night tower. A daylight render
+  has *unlit* windows and no global grade can turn them on, so it landed on a murky
+  blue hour rather than the mockup's look.
+- **Compositing the whole tower** onto a blurred backdrop from the same photo, so all
+  ten floors fit the wide strip. In true colour the blurred backdrop reads as an
+  obvious smear next to the sharp building.
 
-Honest limitation: a daylight render has *unlit* windows, and no global grade can turn
-them on. The result reads as blue hour rather than the mockup's lit-at-night tower.
-Getting actual lit windows needs either a night render of the building or per-window
-compositing. All the constants (`TOWER_BOX`, `TOWER_X`, `TOWER_H`, `NIGHT_GAIN`,
-`GLOW_COLOR`, `FADE_START`) are at the top of the file if you want to retune it.
+The crop shows the roofline and upper floors. Fitting the whole tower into a 2.17:1
+strip isn't possible from a 3:4 portrait without either squashing it or inventing
+background, so the crop is the honest option. `SOURCE_CROP` at the top of
+`tools/make-assets.py` reframes it.
+
+**Contrast caveat.** The white bullets sit over the photo, and its bright cream facade
+runs right behind them. Contrast comes from two places, neither of which touches the
+image: the card's mask fades the photo out into the dark card background from 26 %
+down, and the bullets carry a soft `text-shadow`. Worst-case backdrop measures about
+**3:1** against white — fine for the 15.5 px bold-ish weight in practice, but under
+WCAG AA's 4.5:1 for body text. Deepen the `.card__media img` mask stops if you want
+strict AA; it costs building visibility.
 
 ### Note on the person
 
