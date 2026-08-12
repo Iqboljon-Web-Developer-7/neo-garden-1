@@ -2,8 +2,8 @@
 """
 Asset pipeline for the Neo Garden landing page.
 
-1. Builds the card image from building.jpeg — a daylight render, graded to night so
-   it sits in the dark composition and keeps white text legible over it.
+1. Builds the card image from building.jpeg, used as shot — cropped to the card's
+   aspect and resized, nothing else.
 2. Places the person cutout from measured landmarks and exports it at 2x its
    display size.
 3. Encodes AVIF + WebP for both and reports byte sizes against budget.
@@ -12,7 +12,7 @@ Run from the project root:  python3 tools/make-assets.py
 """
 import json
 import os
-from PIL import Image, ImageChops, ImageFilter
+from PIL import Image
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, "assets", "img")
@@ -29,100 +29,22 @@ BUDGET = {"building-card.avif": 45_000, "person.avif": 40_000}
 
 PLATE_W = 716
 
-# Crop taken from building.jpeg (3456x4608). A wide band across the building's upper
-# mass: the card is short and wide, and the CSS mask fades its lower half out, so the
-# roofline belongs in the upper third or it disappears under the fade. Matches the
-# plate's 716x330 aspect exactly so nothing is squashed.
-SOURCE_CROP = (0, 300, 3456, 1893)   # only used to derive the blurred backdrop
-
-# The tower itself, cropped tight in building.jpeg pixels, plus where it lands on the
-# plate. TOWER_X biases left of centre: the person cutout covers the plate from x~444,
-# so anything past that is hidden behind him.
-TOWER_BOX = (740, 330, 3210, 2930)
-TOWER_H = 318
-TOWER_X = 150
-
-# Grade constants. Per-channel gain + gamma turns the daylight render to night; the
-# warm pass puts light back into windows.
-NIGHT_GAIN = ((0.30, 1.42), (0.35, 1.38), (0.50, 1.24))   # (gain, gamma) per channel
-GLOW_COLOR = (255, 196, 116)
-GLOW_FLOOR = 150      # luminance below which nothing glows
-SKY_SCALE = 55        # blue-minus-red above this reads as sky
-FADE_START = 92       # plate row (0-255 scale) where the floor fade begins
-
-
-def night_grade(img):
-    """Daylight render -> night. Darkens and cools everything, then puts a warm glow
-    back into the bright NON-SKY pixels so windows and lit facade read as lit.
-
-    The sky has to be excluded from the glow explicitly. It's the brightest thing in
-    the frame, so a plain luminance threshold turns it into a sunset instead of a
-    night sky. It's separable because it is the only large area where blue dominates
-    red that strongly."""
-    r, g, b = img.split()
-    lum = img.convert("L")
-
-    sky = ImageChops.subtract(b, r).point(lambda v: min(255, int(v * 255 / SKY_SCALE)))
-    hi = lum.point(lambda v: 0 if v < GLOW_FLOOR
-                   else min(255, int((v - GLOW_FLOOR) * 255 / (255 - GLOW_FLOOR))))
-    glow = ImageChops.multiply(hi, ImageChops.invert(sky))
-    glow = glow.point(lambda v: int(255 * (v / 255) ** 1.5))
-
-    def ch(band, gain, gamma):
-        return band.point(
-            lambda v: max(0, min(255, int(255 * (v / 255) ** gamma * gain))))
-
-    base = Image.merge("RGB", tuple(
-        ch(band, gain, gamma) for band, (gain, gamma) in zip((r, g, b), NIGHT_GAIN)))
-    warm = Image.new("RGB", img.size, GLOW_COLOR)
-    glow3 = Image.merge("RGB", (glow, glow, glow))
-    return ImageChops.add(base, ImageChops.multiply(warm, glow3))
-
-
-def floor_fade(img):
-    """Darken the lower part of the plate. The bullets and price sit over it in white
-    and gold, and an evenly-lit facade behind them costs too much contrast. Baked in
-    rather than left to the CSS mask alone so the text is legible even if the mask
-    is ever changed."""
-    w, h = img.size
-    ramp = Image.linear_gradient("L").resize((w, h))          # 0 at top -> 255 at bottom
-    ramp = ramp.point(lambda v: 255 if v < FADE_START else
-                      max(0, int(255 - (v - FADE_START) * 255 / (255 - FADE_START))))
-    return Image.composite(img, Image.new("RGB", (w, h), (5, 12, 24)), ramp)
+# Crop taken from building.jpeg (3456x4608), matching the plate's 2.17:1 aspect
+# exactly so nothing is squashed. Starts just above the penthouse so the roofline
+# reads, and runs down through the upper floors; the card's lower half sits under the
+# text scrim anyway.
+SOURCE_CROP = (0, 430, 3456, 2022)
 
 
 def build_plate():
-    """Build the card image from building.jpeg.
+    """Build the card image from building.jpeg: crop to the card's aspect, resize, done.
 
-    The source is a 3:4 portrait of a tall tower; the card is a 2.17:1 strip. Cropping
-    a band out of it shows four floors and reads as a low-rise, so instead the whole
-    building is scaled to the plate height and composited onto a backdrop derived from
-    the source itself — a heavily blurred, stretched copy, which matches the sky and
-    ground colours exactly and hides the seam a synthetic gradient would show.
-
-    Nothing has to be painted out here: unlike the crop from screen.png this source is
-    clean, with no bullet text or figure baked into it."""
+    The photo is used as shot — no colour grade, no recomposition. Earlier passes tried
+    grading it to night to match the mockup, and compositing the whole tower onto a
+    blurred backdrop so all ten floors fit; both were rejected. Legibility for the text
+    over it is handled by a CSS scrim in index.html, which leaves the image untouched."""
     src = Image.open(os.path.join(ROOT, "building.jpeg")).convert("RGB")
-
-    tower = src.crop(TOWER_BOX)
-    tw = round(TOWER_H * tower.width / tower.height)
-    tower = tower.resize((tw, TOWER_H), Image.LANCZOS)
-
-    bg = src.crop(SOURCE_CROP).resize((PLATE_W, PLATE_H), Image.LANCZOS)
-    bg = bg.filter(ImageFilter.GaussianBlur(38))
-
-    plate = bg.copy()
-    plate.paste(tower, (TOWER_X, PLATE_H - TOWER_H))
-    # soften the two vertical seams so the pasted rectangle doesn't read as an edge
-    for sx in (TOWER_X, TOWER_X + tw):
-        band = 10
-        box = (max(0, sx - band), 0, min(PLATE_W, sx + band), PLATE_H)
-        if box[2] <= box[0]:
-            continue
-        patch = plate.crop(box).filter(ImageFilter.GaussianBlur(3))
-        plate.paste(patch, box[:2])
-
-    return floor_fade(night_grade(plate))
+    return src.crop(SOURCE_CROP).resize((PLATE_W, PLATE_H), Image.LANCZOS)
 
 
 # Figure placement, in 2x mockup pixels. Derived from three independent landmarks

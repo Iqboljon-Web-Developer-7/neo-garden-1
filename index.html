@@ -139,8 +139,11 @@ body{
 }
 .card__media img{
   display:block;width:100%;height:calc(165 * var(--u));object-fit:cover;
-  -webkit-mask-image:linear-gradient(180deg,#000 0%,#000 46%,rgba(0,0,0,.55) 74%,transparent 100%);
-          mask-image:linear-gradient(180deg,#000 0%,#000 46%,rgba(0,0,0,.55) 74%,transparent 100%);
+  /* The photo is used as shot, so the contrast for the white bullets over it comes
+     from here: the mask fades the image out into the card's dark background rather
+     than the image being darkened. Bullets start at 56% of this height. */
+  -webkit-mask-image:linear-gradient(180deg,#000 0%,#000 26%,rgba(0,0,0,.26) 55%,rgba(0,0,0,.08) 78%,transparent 100%);
+          mask-image:linear-gradient(180deg,#000 0%,#000 26%,rgba(0,0,0,.26) 55%,rgba(0,0,0,.08) 78%,transparent 100%);
 }
 
 /* The figure overhangs the card's TOP edge but is clipped by its right and
@@ -173,6 +176,9 @@ body{
   font-size:calc(15.5 * var(--u));
   line-height:calc(24 * var(--u));
   letter-spacing:calc(.15 * var(--u));
+  /* the photo behind is used as shot and stays bright in places, so the glyphs
+     carry their own separation as well as leaning on the card's fade */
+  text-shadow:0 calc(1 * var(--u)) calc(4 * var(--u)) rgba(2,8,18,.85);
 }
 .bullets li::before{
   content:"";position:absolute;left:calc(.5 * var(--u));top:calc(8 * var(--u));
