@@ -76,8 +76,8 @@ runner-up (Saira Condensed) managed 73 %. Rerun with `node tools/match-glyphs.mj
 | h1 | 7.0 % | yes |
 | cta | 9.3 % | yes |
 | timer | 12.9 % | **no** — shows MM:SS, mockup shows HH:MM:SS |
-| card | 39.8 % | **no** — different building, different person, no price underline |
-| **overall** | **21.7 %** | |
+| card | 42.4 % | **no** — different building, different person, bullets relaid out |
+| **overall** | **22.8 %** | |
 
 Only the h1 and CTA numbers still measure fidelity, and they're at the floor: what's
 left there is text antialiasing, which never reaches zero on a thresholded diff.
@@ -103,9 +103,16 @@ column. Their diff percentages measure those decisions, not build quality.
    column, so the mockup's `SOAT` group is gone. Minutes accumulate rather than rolling
    into a hidden hours field, so a 90-minute deadline reads `90:00`, not `30:00`.
 5. **Badge, price and CTA carry your content, not the mockup's.** The badge reads
-   `25-AVGUST / 20:30da` (the mockup's `29-IYUN / VAQTI: 20:30`), the price lost its
-   underline, and the CTA points at your Telegram invite. `VAQTI:` was dropped because
-   `VAQTI: 20:30da` doubles the time marker — say the word to put the label back.
+   `25-AVGUST / 20:30da` (the mockup's `29-IYUN / VAQTI: 20:30`), the price line
+   (`Oyiga 3 mln 400 ming so'mdan`) is gone entirely, and the CTA points at your
+   Telegram invite. `VAQTI:` was dropped because `VAQTI: 20:30da` doubles the time
+   marker — say the word to put the label back.
+
+   With the price gone the bullet block was left floating high, so `.card__body` is
+   now anchored to the card's **bottom** edge (`bottom: 20`) instead of its top, and a
+   fourth bullet — **"Shahar markazida"** — was added to fill it out. That line is my
+   copy, not yours: it only restates the headline's claim so it invents nothing about
+   the property, but swap it for something you'd rather sell on.
 6. **Logo and clock are images, not SVG.** They're bespoke artwork that exists only
    inside `screen.png`; a hand-drawn SVG never converged (the header diff was 10.5 %
    with my traced version, 5.9 % with the real artwork). A logo is an asset, not text,

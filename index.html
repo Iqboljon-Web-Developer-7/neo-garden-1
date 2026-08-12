@@ -102,7 +102,7 @@ body{
 .badge{
   display:flex;align-items:center;gap:calc(6 * var(--u));
   height:calc(40 * var(--u));
-  padding:0 calc(10 * var(--u)) 0 calc(6.5 * var(--u));
+  padding:0 calc(10 * var(--u)) 0 calc(3.25 * var(--u));
   border:1px solid rgba(255,255,255,.22);
   border-radius:calc(20 * var(--u));
   background:rgba(255,255,255,.10);
@@ -139,11 +139,12 @@ body{
 }
 .card__media img{
   display:block;width:100%;height:calc(165 * var(--u));object-fit:cover;
-  /* The photo is used as shot, so the contrast for the white bullets over it comes
-     from here: the mask fades the image out into the card's dark background rather
-     than the image being darkened. Bullets start at 56% of this height. */
-  -webkit-mask-image:linear-gradient(180deg,#000 0%,#000 26%,rgba(0,0,0,.26) 55%,rgba(0,0,0,.08) 78%,transparent 100%);
-          mask-image:linear-gradient(180deg,#000 0%,#000 26%,rgba(0,0,0,.26) 55%,rgba(0,0,0,.08) 78%,transparent 100%);
+  /* The photo is used as shot, so contrast for the white bullets comes from here:
+     the mask fades the image into the card's dark background rather than darkening
+     the image itself. The bullets sit at the card's bottom now, mostly BELOW this
+     image, so the fade can start late and leave the building visible. */
+  -webkit-mask-image:linear-gradient(180deg,#000 0%,#000 58%,rgba(0,0,0,.5) 79%,transparent 100%);
+          mask-image:linear-gradient(180deg,#000 0%,#000 58%,rgba(0,0,0,.5) 79%,transparent 100%);
 }
 
 /* The figure overhangs the card's TOP edge but is clipped by its right and
@@ -166,9 +167,9 @@ body{
   display:block;
 }
 
-.card__body{position:absolute;left:0;right:0;top:0;padding:0 calc(16 * var(--u))}
+.card__body{position:absolute;left:0;right:0;bottom:calc(20 * var(--u));padding:0 calc(16 * var(--u))}
 
-.bullets{margin:calc(92 * var(--u)) 0 0;padding:0;list-style:none}
+.bullets{margin:0;padding:0;list-style:none}
 .bullets li{
   position:relative;
   padding-left:calc(20.5 * var(--u));
@@ -186,14 +187,6 @@ body{
   border-radius:50%;background:var(--gold);
 }
 
-.price{
-  margin:calc(11 * var(--u)) 0 0;
-  font-weight:600;
-  font-size:calc(25 * var(--u));
-  line-height:calc(29.5 * var(--u));
-  letter-spacing:calc(.1 * var(--u));
-  color:var(--gold-text);
-}
 
 /* -------------------------------------------------------------------- cta */
 .cta{
@@ -311,8 +304,8 @@ body{
         <li>Boshlang‘ich to‘lovsiz</li>
         <li>60 oyga bo‘lib to‘lash</li>
         <li>Faqat pasport evaziga</li>
+        <li>Shahar markazida</li>
       </ul>
-      <p class="price">Oyiga 3 mln 400<br>ming so‘mdan</p>
     </div>
   </section>
 
