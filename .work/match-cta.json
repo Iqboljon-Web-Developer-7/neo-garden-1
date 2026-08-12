@@ -1,0 +1,74 @@
+[
+  {
+    "family": "Oswald",
+    "weight": 600,
+    "iou": 0.6574074074074074,
+    "size": 46,
+    "ls": -2.1,
+    "inkW": 437,
+    "inkH": 45
+  },
+  {
+    "family": "Oswald",
+    "weight": 700,
+    "iou": 0.5924677246936929,
+    "size": 44,
+    "ls": -1.5,
+    "inkW": 438,
+    "inkH": 43
+  },
+  {
+    "family": "Big Shoulders Display",
+    "weight": 900,
+    "iou": 0.5534325202024016,
+    "size": 49,
+    "ls": -1.2,
+    "inkW": 435,
+    "inkH": 46
+  },
+  {
+    "family": "Barlow Condensed",
+    "weight": 800,
+    "iou": 0.5207625240135954,
+    "size": 52,
+    "ls": -2.1,
+    "inkW": 438,
+    "inkH": 42
+  },
+  {
+    "family": "Khand",
+    "weight": 700,
+    "iou": 0.48515849027357977,
+    "size": 50,
+    "ls": -1.6,
+    "inkW": 438,
+    "inkH": 39
+  },
+  {
+    "family": "Saira Condensed",
+    "weight": 800,
+    "iou": 0.47468496010737454,
+    "size": 50,
+    "ls": -2.2,
+    "inkW": 434,
+    "inkH": 41
+  },
+  {
+    "family": "Teko",
+    "weight": 600,
+    "iou": 0.4284484243154813,
+    "size": 46,
+    "ls": 1,
+    "inkW": 437,
+    "inkH": 34
+  },
+  {
+    "family": "Roboto Condensed",
+    "weight": 700,
+    "iou": 0.3837142446456806,
+    "size": 54,
+    "ls": -1.5,
+    "inkW": 509,
+    "inkH": 46
+  }
+]
